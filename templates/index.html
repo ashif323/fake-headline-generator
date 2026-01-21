@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Funny Headline Generator</title>
+    <meta name="viewport" content="width=device-width">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
+        .card { background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); border: none; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .headline { font-family: 'Courier New', monospace; font-size: 1.8rem; color: #333; min-height: 80px; }
+        .btn-generate { background: linear-gradient(45deg, #ff6b6b, #feca57); border: none; font-weight: bold; }
+        .btn-copy { background: #4ecdc4; border: none; }
+    </style>
+</head>
+<body class="d-flex align-items-center justify-content-center p-4">
+    <div class="card p-5" style="max-width: 600px; width: 100%;">
+        <h1 class="text-center mb-4 text-primary">😂 Funny Headline Generator</h1>
+        
+        <div class="mb-4">
+            <label class="form-label fw-bold">Choose Category:</label>
+            <select id="category" class="form-select">
+                <option value="sports">🏏 Sports Madness</option>
+                <option value="entertainment">🎬 Bollywood Absurdity</option>
+                <option value="politics">🏛️ Desi Politics</option>
+            </select>
+        </div>
+        
+        <button id="generateBtn" class="btn btn-generate w-100 py-3 mb-4">GENERATE HILARIOUS HEADLINE 🚀</button>
+        
+        <div id="headline" class="headline text-center p-4 border rounded bg-light mb-4"></div>
+        
+        <button id="copyBtn" class="btn btn-copy w-100 py-2" style="display:none;">📋 Copy to Clipboard</button>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('generateBtn').onclick = async () => {
+            const cat = document.getElementById('category').value;
+            const res = await fetch('/generate', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({category: cat})
+            });
+            const data = await res.json();
+            document.getElementById('headline').textContent = data.headline;
+            document.getElementById('copyBtn').style.display = 'block';
+        };
+
+        document.getElementById('copyBtn').onclick = () => {
+            navigator.clipboard.writeText(document.getElementById('headline').textContent);
+            alert('Copied! 😂 Share the madness');
+        };
+    </script>
+</body>
+</html>

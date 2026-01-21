@@ -1,7 +1,8 @@
-# 1- import necessary libraries
+from flask import Flask, render_template, request, jsonify
 import random
 
-# 2- Categorized data
+app = Flask(__name__)
+
 categories = {
     'sports': {
         'subjects': ['Virat Kohli on buffalo', 'MS Dhoni\'s pet tiger', 'Sachin\'s cricket bat', 'Rohit Sharma\'s autorickshaw'],
@@ -20,31 +21,22 @@ categories = {
     }
 }
 
-# 3- function to generate a fake headline
-
 def generate_headline(category):
-        data = categories[category]
-        subj = random.choice(data['subjects'])
-        act = random.choice(data['actions'])
-        place = random.choice(data['places'])
-        return f" BREAKING NEWS:   {subj} {act} {place}"
-        
-    
-# 4- interactive user input
-print("Categories available: sports, entertainment, politics")
+    data = categories[category]
+    subj = random.choice(data['subjects'])
+    act = random.choice(data['actions'])
+    place = random.choice(data['places'])
+    return f"BREAKING NEWS: {subj} {act} {place}!".title()
 
-while True:
-        try:
-            cat = input("\nChoose a category from the above list (or type 'exit' to quit): ").strip().lower()
-            if cat == 'exit':
-                break
-            if cat in categories:
-                print(generate_headline(cat))
-            else:
-                print("Invalid category. Please choose from the list.")
-        except KeyboardInterrupt:
-            print("\nExiting the headline generator. Goodbye!")
-            break
-            
+@app.route('/')
+def index():
+    return render_template('index.html')
 
+@app.route('/generate', methods=['POST'])
+def generate():
+    category = request.json['category']
+    headline = generate_headline(category)
+    return jsonify({'headline': headline})
 
+if __name__ == '__main__':
+    app.run(debug=True)
